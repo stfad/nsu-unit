@@ -1,7 +1,9 @@
 package ClassesToTest;
 
+import Core.UnknownRadioTypeException;
+
 public class SimpleRadioFactory {
-    public RadioStation createRadioStation(String type) throws Exception {
+    public static RadioStation createRadioStation(String type) throws UnknownRadioTypeException {
         RadioStation radioStation = null;
         if (type.equals("funk")) {
             radioStation = new BounceFM();
@@ -10,7 +12,7 @@ public class SimpleRadioFactory {
         } else if (type.equals("hard rock")) {
             radioStation = new RadioX();
         } else {
-            throw new Exception("Unknown radio type");
+            throw new UnknownRadioTypeException("Unknown radio type! Expected one of: funk, hip-hop, hard rock, received " + type);
         }
         return radioStation;
     }
