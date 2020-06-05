@@ -8,11 +8,11 @@ import static java.lang.System.*;
 
 public class MainClass {
     public static void main(String[] args) {
-        System.out.println("Hello from NSUUnit!");
         if (args.length < 2) {
             System.out.println("Usage: java -jar <junit-jar> N class-name [class-name]*");
             exit(1);
         }
+        System.out.println("Hello from NSUUnit!");
 
         int nThreads = 0;
         try {

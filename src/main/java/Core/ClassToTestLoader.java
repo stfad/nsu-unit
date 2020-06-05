@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ClassToTestLoader {
     public static void loadClassesToQueue(int nThreads, List<String> args) {
+        System.out.println("Loading classes started");
         List<ClassToTest> classList = new ArrayList<>();
         for (String className : args) {
             try {
@@ -21,6 +22,8 @@ public class ClassToTestLoader {
                 err.printStackTrace();
             }
         }
+        System.out.println("Loading classes finished");
+        System.out.println("------------------------------------------------------------");
 
         ExecutorService executor = Executors.newFixedThreadPool(nThreads);
 
@@ -32,7 +35,14 @@ public class ClassToTestLoader {
                     System.out.println("locked by thread " + Thread.currentThread().getName());
                     ClassToTest targetClass = cl.getClass().newInstance();
                     for (Method m: cl.getClass().getMethods()) {
-                        if (m.getName().startsWith("test")) {
+                        if (m.isAnnotationPresent(Before.class)) {
+                            targetClass.updateBeforeMethod(m);
+                        } else if (m.isAnnotationPresent(After.class)) {
+                            targetClass.updateAfterMethod(m);
+                        }
+                    }
+                    for (Method m: cl.getClass().getMethods()) {
+                        if (m.isAnnotationPresent(Test.class)) {
                             targetClass.runOneTest(m);
                         }
                     }

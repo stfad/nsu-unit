@@ -45,6 +45,10 @@ public abstract class RadioStation {
         this.genre = genre;
     }
 
+    public int getSongsInQueue() {return songsInQueue; }
+
+    public void setSongsInQueue(int arg) {this.songsInQueue = arg;}
+
     public void showAvailableSongs() {
         System.out.println("Available songs on the " + getName() + ":");
         availableSongs.forEach(System.out::println);
@@ -62,6 +66,23 @@ public abstract class RadioStation {
             songsInQueue++;
             return;
         }
-        throw new SongNotFoundException("This song isn't in the list of available songs");
+        showAvailableSongs();
+        throw new SongNotFoundException("The song \"" + songName + "\" isn't in the list of available songs");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        RadioStation other  = (RadioStation) obj;
+        return (this.name.equals(other.name)) && (this.genre.equals(other.genre)) && (this.host.equals(other.host));
+    }
+
+    @Override
+    public String toString() {
+        return "name = " + name + ", host = " + host + ", genre = " + genre;
     }
 }

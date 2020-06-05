@@ -7,9 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Test {
-    static class EmptyException extends Throwable {
-        private EmptyException() {};
-    }
-    Class<? extends Throwable> expected() default EmptyException.class;
+public @interface Before {
 }
