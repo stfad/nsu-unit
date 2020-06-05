@@ -29,6 +29,9 @@ public class ClassToTestLoader {
 
         for (ClassToTest cl : classList) {
             executor.execute(() -> {
+                int amountOfTests = 0;
+                int successfullTests = 0;
+                List<String> brokenTestsList = new ArrayList<>();
                 ReentrantLock lock = new ReentrantLock();
                 try {
                     lock.lock();
@@ -43,7 +46,12 @@ public class ClassToTestLoader {
                     }
                     for (Method m: cl.getClass().getMethods()) {
                         if (m.isAnnotationPresent(Test.class)) {
-                            targetClass.runOneTest(m);
+                            amountOfTests++;
+                            if (targetClass.runOneTest(m) == 1) {
+                                successfullTests++;
+                            } else {
+                                brokenTestsList.add(m.getName());
+                            }
                         }
                     }
                 } catch (Throwable err) {
@@ -52,6 +60,14 @@ public class ClassToTestLoader {
                 finally {
                     lock.unlock();
                     System.out.println("unlocked by thread " + Thread.currentThread().getName());
+                    System.out.println(cl.getClass().getName() + " REPORT: SUCCESSFULL " + successfullTests + " OUT OF " + amountOfTests);
+                    if (brokenTestsList.size() > 0) {
+                        System.out.println("BROKEN TESTS: ");
+                        for (String str: brokenTestsList) {
+                            System.out.println(str);
+                        }
+                        System.out.println("-------------------------------------------");
+                    }
                 }
             });
         }

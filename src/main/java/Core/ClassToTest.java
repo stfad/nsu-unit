@@ -2,9 +2,11 @@ package Core;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClassToTest {
-    void runOneTest(Method test) {
+    int runOneTest(Method test) {
+        AtomicInteger success = new AtomicInteger(0);
         try {
             if (beforeMethod != null) {
                 beforeMethod.invoke(this);
@@ -12,28 +14,23 @@ public class ClassToTest {
             System.out.println(test.getName() + " STARTED");
             test.invoke(this);
             System.out.println(test.getName() + " PASSED");
+            success.incrementAndGet();
         } catch (InvocationTargetException err) {
-            System.out.println("1");
             Class<? extends Throwable> expectedException;
             Test annotation = test.getAnnotation(Test.class);
-            System.out.println("2");
             if (annotation == null || annotation.expected() == Test.EmptyException.class) {
-                System.out.println("3");
                 expectedException = null;
             } else {
-                System.out.println("4");
                 expectedException = annotation.expected();
             }
 
             if (expectedException != null && expectedException.isAssignableFrom(err.getCause().getClass())) {
-                System.out.println("5");
+                success.incrementAndGet();
                 System.out.println(test.getName() + " PASSED");
             } else {
-                System.out.println("6");
                 System.out.println("THERE WAS A FAILURE: " + err.getCause().toString());
             }
         } catch (Throwable err) {
-            System.out.println("7");
             System.out.println(test.getName() + " FAILED BY " + err.toString());
             err.printStackTrace();
         } finally {
@@ -45,16 +42,17 @@ public class ClassToTest {
                 err.printStackTrace();
             }
         }
+        return success.intValue();
     }
 
-    public void updateBeforeMethod(Method m) throws BeforeMethodAlreadyExistsException {
+    void updateBeforeMethod(Method m) throws BeforeMethodAlreadyExistsException {
         if (beforeMethod != null) {
             throw new BeforeMethodAlreadyExistsException("@Before annotation should be used only once!");
         }
         beforeMethod = m;
     }
 
-    public void updateAfterMethod(Method m) throws AfterMethodAlreadyExistsException {
+    void updateAfterMethod(Method m) throws AfterMethodAlreadyExistsException {
         if (afterMethod != null) {
             throw new AfterMethodAlreadyExistsException("@After annotation should be used only once!");
         }
