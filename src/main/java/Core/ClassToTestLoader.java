@@ -3,8 +3,6 @@ package Core;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ClassToTestLoader {
     public static void loadClassesToQueue(int nThreads, List<String> args) {
@@ -24,7 +22,7 @@ public class ClassToTestLoader {
         System.out.println("Loading classes finished");
         System.out.println("------------------------------------------------------------");
 
-        ExecutorService executor = Executors.newFixedThreadPool(nThreads);
+        QueueOfClassesToTest executor = new QueueOfClassesToTest(nThreads);
 
         for (ClassToTest cl : classList) {
             executor.execute(() -> {
