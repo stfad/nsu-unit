@@ -1,5 +1,6 @@
 # nsu-unit
 Аналог библиотеки JUnit
 
-Usage: java -jar target/nsu-unit-1.0-SNAPSHOT.jar N Tests.BounceFMTest Tests.RadioXTest Tests.SimpleRadioFactoryTest
+Usage: java -cp target/nsu-unit-1.0-SNAPSHOT.jar:SanAndreas/target/classes/ MainClass 3 Tests.RadioXTest t Tests.BounceFMTest Tests.SimpleRadioFactoryTest
+
 

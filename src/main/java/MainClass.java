@@ -9,7 +9,7 @@ import static java.lang.System.*;
 public class MainClass {
     public static void main(String[] args) {
         if (args.length < 2) {
-            System.out.println("Usage: java -jar <junit-jar> N class-name [class-name]*");
+            System.out.println("Usage: java -cp <nsu-unit-jar>:<classpath-for-tests> MainClass N class-name [class-name]*");
             exit(1);
         }
         System.out.println("Hello from NSUUnit!");
