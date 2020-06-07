@@ -2,11 +2,10 @@ package Core;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClassToTest {
     int runOneTest(Method test) {
-        AtomicInteger success = new AtomicInteger(0);
+        int success = 0;
         try {
             if (beforeMethod != null) {
                 beforeMethod.invoke(this);
@@ -14,7 +13,7 @@ public class ClassToTest {
             System.out.println(test.getName() + " STARTED");
             test.invoke(this);
             System.out.println(test.getName() + " PASSED");
-            success.incrementAndGet();
+            success++;
         } catch (InvocationTargetException err) {
             Class<? extends Throwable> expectedException;
             Test annotation = test.getAnnotation(Test.class);
@@ -25,7 +24,7 @@ public class ClassToTest {
             }
 
             if (expectedException != null && expectedException.isAssignableFrom(err.getCause().getClass())) {
-                success.incrementAndGet();
+                success++;
                 System.out.println(test.getName() + " PASSED");
             } else {
                 System.out.println("THERE WAS A FAILURE: " + err.getCause().toString());
@@ -42,7 +41,7 @@ public class ClassToTest {
                 err.printStackTrace();
             }
         }
-        return success.intValue();
+        return success;
     }
 
     void updateBeforeMethod(Method m) throws BeforeMethodAlreadyExistsException {
